@@ -5,6 +5,8 @@ version = "@toml.version@"
 distribution = "2201.13.0"
 keywords = ["arxiv", "research", "papers", "search"]
 license = ["Apache-2.0"]
+icon = "icon.png"
+readme = "Package.md"
 
 [build-options]
 observabilityIncluded = true
