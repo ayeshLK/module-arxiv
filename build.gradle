@@ -53,6 +53,12 @@ allprojects {
     }
 }
 
+allprojects {
+    if (!project.hasProperty('groups') && !project.hasProperty('disable')) {
+        project.ext.disable = 'live'
+    }
+}
+
 def moduleVersion = project.version.replace("-SNAPSHOT", "")
 
 task build {

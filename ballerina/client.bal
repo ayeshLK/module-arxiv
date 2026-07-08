@@ -39,8 +39,10 @@ public isolated client class Client {
     # + delaySeconds - The number of seconds to wait between API requests. arXiv's Terms of Use
     # ask for no more than one request every three seconds.
     # + numRetries - The number of times to retry a failing API request before returning an error.
-    public isolated function init(int pageSize = 100, decimal delaySeconds = 3.0d, int numRetries = 3) returns error? {
-        self.httpClient = check new (SERVICE_URL, {timeout: 30});
+    # + serviceUrl - The base URL of the arXiv API. Only useful for testing against a local mock service.
+    public isolated function init(int pageSize = 100, decimal delaySeconds = 3.0d, int numRetries = 3,
+            string serviceUrl = SERVICE_URL) returns error? {
+        self.httpClient = check new (serviceUrl, {timeout: 30});
         self.pageSize = pageSize;
         self.delaySeconds = delaySeconds;
         self.numRetries = numRetries;
