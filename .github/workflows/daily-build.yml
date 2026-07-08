@@ -43,3 +43,10 @@ jobs:
           packagePAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./gradlew test -PbuildUsingDocker=nightly
+
+      - name: Run Live Smoke Tests
+        env:
+          packageUser: ${{ github.actor }}
+          packagePAT: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./gradlew test -PbuildUsingDocker=nightly -Pgroups=live
