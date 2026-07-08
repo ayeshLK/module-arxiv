@@ -1,8 +1,10 @@
 [package]
-org = "ayeshalmeida"
+org = "ayesha"
 name = "arxiv"
-version = "0.1.0"
-distribution = "2201.13.3"
+version = "0.5.0"
+distribution = "2201.13.0"
+keywords = ["arxiv", "research", "papers", "search"]
+license = ["Apache-2.0"]
 
 [build-options]
 observabilityIncluded = true
