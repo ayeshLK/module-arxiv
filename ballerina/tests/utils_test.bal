@@ -64,6 +64,21 @@ function testGetShortIdWithoutMarker() {
 }
 
 @test:Config {}
+function testGetShortIdFromEntryIdString() {
+    test:assertEquals(getShortId("https://arxiv.org/abs/2107.05580v1"), "2107.05580v1");
+}
+
+@test:Config {}
+function testGetShortIdFromEntryIdStringWithLegacyFormat() {
+    test:assertEquals(getShortId("https://arxiv.org/abs/quant-ph/0201082v1"), "quant-ph/0201082v1");
+}
+
+@test:Config {}
+function testGetShortIdFromEntryIdStringWithoutMarker() {
+    test:assertEquals(getShortId("not-a-standard-entry-id"), "not-a-standard-entry-id");
+}
+
+@test:Config {}
 function testGetSourceUrlWithPdf() {
     Result result = sampleResult("https://arxiv.org/abs/2107.05580v1");
     result.pdfUrl = "https://arxiv.org/pdf/2107.05580v1";

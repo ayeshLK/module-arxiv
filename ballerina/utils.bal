@@ -40,25 +40,27 @@ isolated function buildQueryPath(Search searchQuery, int startIndex, int pageSiz
     return string `${QUERY_PATH}?${string:'join("&", ...pairs)}`;
 }
 
-# Returns the short arXiv identifier for a result, extracted from its `entryId`.
+# Returns the short arXiv identifier extracted from a `Result`'s `entryId`, or from an `entryId`
+# URL string directly.
 #
-# + result - The result to extract the identifier from.
+# + entryIdSource - A `Result`, or an `entryId` URL, e.g. `https://arxiv.org/abs/2107.05580v1`.
 # + return - e.g. `2107.05580v1`, or the legacy `quant-ph/0201082v1` format for pre-March-2007
 # identifiers.
-public function getShortId(Result result) returns string {
+public isolated function getShortId(Result|string entryIdSource) returns string {
+    string entryId = entryIdSource is Result ? entryIdSource.entryId : entryIdSource;
     string marker = "arxiv.org/abs/";
-    int? markerIndex = result.entryId.indexOf(marker);
+    int? markerIndex = entryId.indexOf(marker);
     if markerIndex is () {
-        return result.entryId;
+        return entryId;
     }
-    return result.entryId.substring(markerIndex + marker.length());
+    return entryId.substring(markerIndex + marker.length());
 }
 
 # Derives the URL of the source tarball for a result from its `pdfUrl`.
 #
 # + result - The result to derive the source URL for.
 # + return - The source URL, or `()` if the result has no PDF link.
-public function getSourceUrl(Result result) returns string? {
+public isolated function getSourceUrl(Result result) returns string? {
     string? pdfUrl = result.pdfUrl;
     if pdfUrl is () {
         return ();
