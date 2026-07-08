@@ -80,7 +80,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/ayeshLK/module-${packageOrg}-${packageName}")
+            url = uri("https://maven.pkg.github.com/ayeshLK/module-arxiv")
             credentials {
                 username = System.getenv("publishUser")
                 password = System.getenv("publishPAT")
