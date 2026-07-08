@@ -4,6 +4,8 @@
 
 The Ballerina arXiv connector lets you search arXiv's database from a Ballerina application without dealing with the feed format directly. It paginates through results on your behalf, encodes query parameters, and parses each entry into typed Ballerina records, while enforcing a request rate and page size that comply with arXiv's [API Terms of Use](https://info.arxiv.org/help/api/tou.html).
 
+> Thank you to arXiv for use of its open access interoperability. This connector was not reviewed or approved by, nor does it necessarily express or reflect the policies or opinions of, arXiv.
+
 ### Key features
 
 - Search by free-text query, field-restricted query (e.g. `au:`, `ti:`, `cat:`), or a list of arXiv IDs
