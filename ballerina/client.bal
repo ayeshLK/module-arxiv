@@ -34,14 +34,14 @@ public isolated client class Client {
     # sizes, delays, or retry counts risk violating arXiv's
     # [API Terms of Use](https://info.arxiv.org/help/api/tou.html).
     #
+    # + serviceUrl - The base URL of the arXiv API. Only useful for testing against a local mock service.
     # + pageSize - The maximum number of results fetched in a single API request. The API's limit
     # is 2000 results per page.
     # + delaySeconds - The number of seconds to wait between API requests. arXiv's Terms of Use
     # ask for no more than one request every three seconds.
     # + numRetries - The number of times to retry a failing API request before returning an error.
-    # + serviceUrl - The base URL of the arXiv API. Only useful for testing against a local mock service.
-    public isolated function init(int pageSize = 100, decimal delaySeconds = 3.0d, int numRetries = 3,
-            string serviceUrl = SERVICE_URL) returns error? {
+    public isolated function init(string serviceUrl = SERVICE_URL, int pageSize = 100,
+            decimal delaySeconds = 3.0d, int numRetries = 3) returns error? {
         self.httpClient = check new (serviceUrl, {timeout: 30});
         self.pageSize = pageSize;
         self.delaySeconds = delaySeconds;
