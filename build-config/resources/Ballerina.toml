@@ -7,6 +7,7 @@ keywords = ["arxiv", "research", "papers", "search"]
 license = ["Apache-2.0"]
 icon = "icon.png"
 readme = "Package.md"
+repository = "https://github.com/ayeshLK/module-arxiv"
 
 [build-options]
 observabilityIncluded = true
