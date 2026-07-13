@@ -112,6 +112,19 @@ function testHttpErrorAfterRetriesExhausted() returns error? {
 }
 
 @test:Config {}
+function testUserAgentHeaderSent() returns error? {
+    Client testClient = check new (pageSize = 10, delaySeconds = 0.01d, numRetries = 1, serviceUrl = MOCK_SERVICE_URL);
+    stream<Result, error?> results = testClient->search({query: "case=echo-user-agent"});
+    Result[] collected = check from Result r in results
+        select r;
+    test:assertEquals(collected.length(), 1);
+    // The mock echoes the received User-Agent header back as the entry title.
+    test:assertEquals(collected[0].title, USER_AGENT);
+    // Guards against an unrendered `@toml.version@` placeholder ever shipping in version.bal.
+    test:assertTrue(re `ballerina-arxiv/\d+\.\d+\.\d+`.isFullMatch(USER_AGENT));
+}
+
+@test:Config {}
 function testRateLimitBetweenPageRequests() returns error? {
     decimal delaySeconds = 0.5d;
     Client testClient = check new (pageSize = 2, delaySeconds = delaySeconds, numRetries = 1, serviceUrl = MOCK_SERVICE_URL);

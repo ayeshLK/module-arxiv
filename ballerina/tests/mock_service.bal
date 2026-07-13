@@ -17,7 +17,7 @@ import ballerina/lang.regexp;
 
 // A mock of arXiv's `/api/query` endpoint, driven entirely by the `search_query` string, so
 // each test can select its own scenario without shared state leaking between tests. The real
-// `Client` is pointed here in tests via the `serviceUrl` configurable (see tests/Config.toml).
+// `Client` is pointed here in tests via its `serviceUrl` init parameter (`MOCK_SERVICE_URL`).
 //
 // `search_query` is treated as `case=<scenario>;total=<n>`, e.g. `case=http500-once;total=5`.
 // A query with no `case=` segment is treated as the "normal" scenario with 5 total results.
@@ -83,12 +83,29 @@ isolated function buildFeedXml(int totalResults, int startIndex, string[] entryI
     foreach string entryId in entryIds {
         entries += buildEntryXml(entryId);
     }
+    return buildFeedXmlFromEntries(totalResults, startIndex, entries);
+}
+
+isolated function buildFeedXmlFromEntries(int totalResults, int startIndex, string entries) returns string {
     return string `<?xml version="1.0" encoding="UTF-8"?>
     <feed xmlns="http://www.w3.org/2005/Atom" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">
         <opensearch:totalResults>${totalResults}</opensearch:totalResults>
         <opensearch:startIndex>${startIndex}</opensearch:startIndex>
         ${entries}
     </feed>`;
+}
+
+// A single entry whose <title> echoes the received User-Agent header, so tests can assert on
+// what the client actually sent over the wire.
+isolated function buildEchoEntryXml(string title) returns string {
+    return string `
+        <entry>
+            <id>https://arxiv.org/abs/echo</id>
+            <updated>2020-01-01T00:00:00Z</updated>
+            <published>2020-01-01T00:00:00Z</published>
+            <title>${title}</title>
+            <summary>User-Agent echo</summary>
+        </entry>`;
 }
 
 isolated function feedResponse(string body) returns http:Response {
@@ -107,7 +124,8 @@ isolated function errorResponse(int statusCode) returns http:Response {
 
 service /api on mockListener {
 
-    resource function get 'query(string search_query = "", string id_list = "", int 'start = 0,
+    resource function get 'query(@http:Header {name: "User-Agent"} string? userAgent,
+            string search_query = "", string id_list = "", int 'start = 0,
             int max_results = 100) returns http:Response {
         if id_list != "" {
             string[] ids = regexp:split(re `,`, id_list);
@@ -124,6 +142,9 @@ service /api on mockListener {
 
         boolean isFirstPage = 'start == 0;
 
+        if config.caseName == "echo-user-agent" {
+            return feedResponse(buildFeedXmlFromEntries(1, 0, buildEchoEntryXml(userAgent ?: "absent")));
+        }
         if config.caseName == "http500-always" {
             return errorResponse(http:STATUS_INTERNAL_SERVER_ERROR);
         }

@@ -83,7 +83,7 @@ public isolated client class Client {
     isolated function requestPage(Search searchQuery, int startIndex, boolean firstPage, int tryIndex) returns FeedPage|error {
         self.applyRateLimit();
         string path = check buildQueryPath(searchQuery, startIndex, self.pageSize);
-        http:Response|http:ClientError response = self.httpClient->get(path);
+        http:Response|http:ClientError response = self.httpClient->get(path, {"User-Agent": USER_AGENT});
         lock {
             self.lastRequestTime = time:utcNow();
         }
