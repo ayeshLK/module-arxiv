@@ -18,7 +18,7 @@
 // and keep the checked-in copy in sync by hand, as with Ballerina.toml.
 
 # The version of this package, matching the `version` in `Ballerina.toml`.
-const string VERSION = "0.5.4";
+const string VERSION = "0.6.0";
 
 # The User-Agent value sent with every arXiv API request, identifying this connector.
 const string USER_AGENT = "ballerina-arxiv/" + VERSION;
